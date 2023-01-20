@@ -7,7 +7,11 @@ body {
 
   }
 h1 {
-    font-size: 3rem;
+    font-size: 4rem;
+    font-weight: bolder;
+    font-family: "Comic Sans MS";
+    color: orange;
+    text-shadow: 1px 1px 2px rgb(254, 254, 254), 0 0 2em rgb(25, 25, 106), 0 0 0.2em rgb(63, 63, 111);
 }
 .calc-body{
     width: 420px;
@@ -40,12 +44,12 @@ h1 {
 }
 
 .buttons {
-    margin-top: 30%;
+    margin-top: 42%;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    column-gap: 35px;
-    row-gap: 35px;
+    column-gap: 50px;
+    row-gap: 35px;  
 }
 
 button {
@@ -56,5 +60,8 @@ button {
     width: 2.5em;
     font-weight: bold;
     text-align: center;
-  
+}
+
+button:hover {
+    background-color: rgb(240, 240, 240);
 }

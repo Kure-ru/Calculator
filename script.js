@@ -1,6 +1,8 @@
 const display = document.getElementById("display");
 const numButtons = document.querySelectorAll('button.number')
 const operatorButtons = document.querySelectorAll('button.operator')
+const decimalButton = document.querySelector("#decimal");
+display.textContent = ""
 let array = []
 
 let operation = {
@@ -14,6 +16,7 @@ const add = (a, b) => {return a + b};
 const subtract = (a, b) => { return a - b};
 const multiply = (a, b) => { return a * b};
 const divide = (a, b) => {return a / b};
+const percentage = (a, b) => {return (a / 100) * b};
 
 const roundResult = (number)  => {
     return Math.round(number * 1000) / 1000
@@ -30,7 +33,14 @@ const operate = (num1, num2, operator) => {
     case "*" :
         return multiply(num1, num2);
     case "/" :
+        if (operation.num1 === 0 || operation.num2 === 0) {
+            alert('You cannot divide by 0');
+            resetData();
+            return 0;
+        }
         return divide(num1, num2);
+    case "%" :
+        return percentage(num1, num2);
    }
 }
 
@@ -50,23 +60,13 @@ const resetData = () => {
     console.log(operation)
 }
 
-//heart button 
-const heartButton = document.querySelector("#♡");
-heartButton.addEventListener('click', (event) => {
-   display.innerHTML = "HI THERE!"
-    })
-
 //input number
  numButtons.forEach((button) => {
     button.addEventListener('click', (event) => {
-        if (operation.num1 != '' && operation.num2 === ''){
-            display.innerHTML = '';
-            console.log('RESET')
-        }    
         display.innerHTML += button.id;
-            array.push(button.id)
-    })})
-
+        array.push(button.id)
+    })});
+ 
 //input operator and update 1st value
 operatorButtons.forEach((button) => {
     button.addEventListener('click',(event) => {
@@ -76,18 +76,15 @@ operatorButtons.forEach((button) => {
             operation.operator = button.id
             array = [];
             display.innerHTML = ""
+        } else if (operation.num1 !== '' && operation.operator === '') {
+            operation.operator = button.id;
+            array = [];
+            display.innerHTML = "";
         } else {
             getTotal();
-             operation.operator = button.id
-             
+             operation.operator = button.id    
         }
     } )
-})
-
-//equal button 
-const equalButton = document.querySelector("#equal");
-equalButton.addEventListener('click', (event) => {
-    getTotal();
 })
 
 const getTotal = () => {
@@ -100,3 +97,49 @@ const getTotal = () => {
         console.log(operation)
 }
 
+const checkDecimal = () => {
+    if (array.length >= 1 && !display.textContent.includes(decimalButton)){
+       display.innerHTML += '.'
+       array.push(".")
+       console.log("decimal")
+   }
+}
+
+
+//equal button 
+const equalButton = document.querySelector("#equal");
+equalButton.addEventListener('click', (event) => {
+    getTotal();
+})
+
+//cancel button 
+const cancelButton = document.querySelector("#C");
+    cancelButton.addEventListener('click', (event) => {
+     display.innerHTML = ""
+    })
+
+
+decimalButton.addEventListener('click', (checkDecimal));
+window.addEventListener('keydown', (e) => {
+   let key = e.key;
+   if (key >= 0 && key <= 9){
+   display.innerHTML += key;
+   array.push(key);}
+   else if (key === '+' || key === '-' || key === '*' || key === '/' || key === '%'){
+    if (operation.num1 === '') {
+        //memorizes 1st value and operator 
+        operation.num1 = Number(array.join(""));
+        operation.operator = key;
+        array = [];
+        display.innerHTML = ""
+    } else if (operation.num1 !== '' && operation.operator === '') {
+        operation.operator = key;
+        array = [];
+        display.innerHTML = "";
+    } else {
+        getTotal();
+         operation.operator = key;    
+    }} else if (key === '='){
+        getTotal();
+    }
+});
