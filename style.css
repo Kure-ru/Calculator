@@ -15,7 +15,7 @@ h1 {
 }
 .calc-body{
     width: 420px;
-    height: 600px;
+    height: 580px;
     background-color: #aaecf0;
     border-radius: 25px;
     box-shadow: 10px 10px 5px #94e7ec;
@@ -44,7 +44,7 @@ h1 {
 }
 
 .buttons {
-    margin-top: 42%;
+    margin-top: 30%;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(5, 1fr);
