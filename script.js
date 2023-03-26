@@ -1,126 +1,55 @@
+const screen = document.getElementById("display");
 const numButtons = document.querySelectorAll("button.number");
 const operatorButtons = document.querySelectorAll("button.operator");
 const decimalButton = document.querySelector("#decimal");
-
-function Calculate(num1, num2) {
-  (this.num1 = num1),
-    (this.num2 = num2),
-    (this.add = function () {
-      console.log(num1);
-      console.log(num2);
-      return num1 + num2;
-    });
-  this.subtract = function () {
-    return num1 - num2;
-  };
-  this.multiply = function () {
-    return num1 * num2;
-  };
-  this.divide = function () {
-    let division = num1 / num2;
-    return division.toFixed(2)
-  };
-  this.percentage = function () {
-    return (num1 / 100) * num2;
-  };
-}
-
-let display = new function (content) {
-    const screen = document.getElementById("display");
-    this.content = content
-    screen.textContent = "";
-    this.showDisplay = function (content) {screen.innerHTML += content}
-    this.resetDisplay= function () {screen.innerHTML = ''};
-  };
-
-//input operator and update 1st value
-    operatorButtons.forEach((button) => {
-        button.addEventListener("click", (event) => {
-           let operation = new Calculate(screen.value, '')
-           console.log(operation)
-           display.resetDisplay()
-        })
-    })
-// operatorButtons.forEach((button) => {
-//   button.addEventListener("click", (event) => {
-//     if (operation.num1 === "") {
-//       //memorizes 1st value and operator
-//       operation.num1 = Number(array.join(""));
-//       operation.operator = button.id;
-//       array = [];
-//       display.innerHTML = "";
-//     } else if (operation.num1 !== "" && operation.operator === "") {
-//       operation.operator = button.id;
-//       array = [];
-//       display.innerHTML = "";
-//     } else {
-//       getTotal();
-//       operation.operator = button.id;
-//     }
-//   });
-// });
-
-const getTotal = () => {
-  //keeps 2nd value
-  operation.num2 = Number(array.join(""));
-  let result = operate(operation.num1, operation.num2, operation.operator);
-  resetData();
-  display.innerHTML = roundResult(result);
-  operation.num1 = result;
-  console.log(operation);
-};
-
-const checkDecimal = () => {
-  if (array.length >= 1 && !display.textContent.includes(decimalButton)) {
-    display.innerHTML += ".";
-    array.push(".");
-    console.log("decimal");
-  }
-};
-
-//equal button
 const equalButton = document.querySelector("#equal");
-equalButton.addEventListener("click", (event) => {
-  getTotal();
-});
-
-//cancel button
 const cancelButton = document.querySelector("#C");
-cancelButton.addEventListener("click", (event) => {
-  display.innerHTML = "";
-});
 
-decimalButton.addEventListener("click", checkDecimal);
-window.addEventListener("keydown", (e) => {
-  let key = e.key;
-  if (key >= 0 && key <= 9) {
-    display.innerHTML += key;
-    array.push(key);
-  } else if (
-    key === "+" ||
-    key === "-" ||
-    key === "*" ||
-    key === "/" ||
-    key === "%"
-  ) {
-    if (operation.num1 === "") {
-      //memorizes 1st value and operator
-      operation.num1 = Number(array.join(""));
-      operation.operator = key;
-      array = [];
-      display.innerHTML = "";
-    } else if (operation.num1 !== "" && operation.operator === "") {
-      operation.operator = key;
-      array = [];
-      display.innerHTML = "";
-    } else {
-      getTotal();
-      operation.operator = key;
+let calculator = {
+  num1: null,
+  num2: null,
+  operator: null,
+  previousTotal: null,
+  operate() {
+    switch (this.operator) {
+      case "+":
+        screen.textContent = Number(this.num1) + Number(this.num2);
+        break;
+      case "-":
+        screen.textContent = Number(this.num1) - Number(this.num2);
+        break;
+      case "*":
+        screen.textContent = Number(this.num1) * Number(this.num2);
+        break;
+      case "/":
+        screen.textContent = Number(this.num1) / Number(this.num2);
+        break;
+      case "%":
+        screen.textContent = (this.num1 / 100) * this.num2;
+        break;
     }
-  } else if (key === "=") {
-    getTotal();
-  }
-});
+    this.num1 = screen.textContent;
+  },
+};
+
+let display = new (function (content) {
+  this.content = content;
+  screen.textContent = "";
+  this.showDisplay = function (content) {
+    screen.innerHTML === "0"
+      ? (screen.innerHTML = content)
+      : (screen.innerHTML += content);
+  };
+  this.resetDisplay = function () {
+    screen.textContent = "0";
+  };
+  this.checkDecimal = function () {
+    if (screen.textContent.length >= 1) {
+      screen.textContent += ".";
+      console.log("decimal");
+    }
+  };
+})();
 
 //////EVENT LISTENERS
 //reset button
@@ -130,9 +59,47 @@ resetButton.addEventListener("click", (event) => {
 });
 //input numbers
 numButtons.forEach((button) => {
-    button.addEventListener("click", (event) => {
-      let number = display.showDisplay(button.id);
-    });
+  button.addEventListener("click", (event) => {
+    display.showDisplay(button.id);
   });
-
-  console.log(display)
+});
+//equal button
+equalButton.addEventListener("click", (event) => {
+  calculator.num2 = screen.textContent;
+  calculator.operate(calculator.num1, calculator.num2);
+});
+//input operator and update 1st value
+operatorButtons.forEach((button) => {
+  button.addEventListener("click", (event) => {
+    calculator.num1 = screen.textContent;
+    calculator.operator = button.id;
+    display.resetDisplay();
+  });
+});
+//cancel button
+cancelButton.addEventListener("click", (event) => {
+  display.resetDisplay();
+});
+//decimal button
+decimalButton.addEventListener("click", (event) => {
+  display.checkDecimal();
+});
+//keyboard events
+window.addEventListener("keydown", (event) => {
+  if (event.key >= 0 && event.key <= 9) {
+    display.showDisplay(event.key);
+  } else if (
+    event.key === "+" ||
+    event.key === "-" ||
+    event.key === "*" ||
+    event.key === "/" ||
+    event.key === "%"
+  ) {
+    calculator.num1 = screen.textContent;
+    calculator.operator = event.key;
+    display.resetDisplay();
+  } else if (event.key === "=" || event.key === 'Enter') {
+    calculator.num2 = screen.textContent;
+    calculator.operate(calculator.num1, calculator.num2);
+  }
+});
